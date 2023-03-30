@@ -1,35 +1,45 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
+import { HeaderComponent } from './components/header/header.component';
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
+      imports: [FormsModule],
+      declarations: [AppComponent, HeaderComponent]
     }).compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
   it(`should have as title 'testopencommit'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('testopencommit');
+    expect(component.title).toEqual('testopencommit');
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+  it('should render app-header with title', () => {
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('testopencommit app is running!');
+    const compiled = fixture.nativeElement;
+    const appHeader = compiled.querySelector('app-header');
+    expect(appHeader).not.toBeNull();
+    expect(appHeader.getAttribute('ng-reflect-title')).toEqual('testopencommit');
+  });
+
+  it('should update title when input changes', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    const input = compiled.querySelector('input');
+    input.value = 'New Title';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(component.title).toEqual('New Title');
   });
 });
